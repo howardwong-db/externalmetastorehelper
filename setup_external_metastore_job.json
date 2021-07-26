@@ -1,0 +1,43 @@
+    {
+        "new_cluster": {
+            "spark_version": "8.3.x-scala2.12",
+            "spark_conf": {
+                "spark.databricks.cluster.profile": "singleNode",
+                "spark.master": "local[*, 4]",
+                "spark.databricks.delta.preview.enabled": "true"
+            },
+            "azure_attributes": {
+                "availability": "ON_DEMAND_AZURE",
+                "first_on_demand": 1,
+                "spot_bid_max_price": -1
+            },
+            "node_type_id": "Standard_DS3_v2",
+            "num_workers": 0,
+            "custom_tags": {
+                "Owner": "howard.wong@databricks.com",
+                "ResourceClass": "SingleNode"
+            },
+            "spark_env_vars": {
+                "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+            },
+            "enable_elastic_disk": true
+        },
+        "notebook_task": {
+            "notebook_path": "/Users/howard.wong@databricks.com/MetaStore/SetupMetaStore",
+            "base_parameters": {
+                "metastorejarpath": "metastore_jars_310",
+                "initmetastore": "No",
+                "hiveversion": "3.1.0",
+                "jdbcurl": "jdbc:sqlserver://oneenvsql.database.windows.net:1433;database=howardtestmetastore",
+                "dbhost": "oneenvsql.database.windows.net",
+                "dbuser_secretname": "dbuser",
+                "dbtype": "mssql",
+                "secretscope": "oetrta",
+                "dbport": "1433",
+                "dbpassword_secretname": "dbpassword"
+            }
+        },
+        "email_notifications": {},
+        "name": "setup_external_metastore",
+        "max_concurrent_runs": 1
+    }
