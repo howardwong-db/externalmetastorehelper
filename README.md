@@ -1,4 +1,4 @@
-#External Hive Metastore Setup helper for Hive 2.2+
+# External Hive Metastore Setup helper for Hive 2.2+
 The official documentation for Azure Databricks External Hive metastore is here: https://docs.microsoft.com/en-us/azure/databricks/data/metastores/external-hive-metastore
 The documentation omitted steps on packaging the metastore db jdbc driver and initializing a new metastore.
 
