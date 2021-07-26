@@ -18,7 +18,9 @@
                 "ResourceClass": "SingleNode"
             },
             "spark_env_vars": {
-                "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+                "PYSPARK_PYTHON": "/databricks/python3/bin/python3",
+                "SQLUSER": "{secrets/oetrta/dbuser}",
+				"SQLPASSWD": "{secrets/oetrta/dbpassword}",
             },
             "enable_elastic_disk": true
         },
