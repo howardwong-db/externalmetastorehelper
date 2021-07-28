@@ -11,7 +11,14 @@ General Steps on configuring an external Hive Metastore:
 
 How to use this notebook:
 * Provision new Hive metastore db or use an existing one - Gate the connection info and store the dbuser and dbpassword into a Databricks secret scope
-* Run this notebook on a DBR 7.3 LTS+ cluster with the parameters. This will generate the cluster init script needed for clusters to connect to the external metastore. This will generate a cluster init script on `dbfs:/databricks/scripts/external-metastore-<hiveversion>.sh` where `<hiveversion>` is the `hiveversion`  parameter without the period.
+* Run this notebook on a DBR 7.3 LTS+ cluster with the correct parameters via Run ALL. Make sure that this cluster has the envs set to get the db user and password from secret store. 
+
+```
+SQLUSER={secrets/<scoope>/<dbuser key>}
+SQLPASSWD={secrets/<scope>/<dbpassword key>}
+```
+
+This will generate the cluster init script needed for clusters to connect to the external metastore. The generated cluster init script will be on `dbfs:/databricks/scripts/external-metastore-<hiveversion>.sh` where `<hiveversion>` is the `hiveversion`  parameter without the period.
   * Parameters:
     * dbhost - the host of the metastore db
     * dbport - the port of the metestore db
