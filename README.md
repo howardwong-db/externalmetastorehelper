@@ -10,7 +10,7 @@ General Steps on configuring an external Hive Metastore:
 3. Configure Hive Metastore with initscript or with cluster UI.
 
 How to use this notebook:
-* Provision new Hive metastore db or use an existing one - Gate the connection info and store the dbuser and dbpassword into a Databricks secret scope
+* Provision new Hive metastore db or use an existing one - Get the connection info and store the dbuser and dbpassword into a Databricks secret scope
 * Run this notebook on a DBR 7.3 LTS+ cluster with the correct parameters via Run ALL. Make sure that this cluster has the envs set to get the db user and password from secret store. 
 
 ```
@@ -29,18 +29,23 @@ This will generate the cluster init script needed for clusters to connect to the
     * secretscope - The name of the Databricks secret scope
     * dbuser_secretname - The secret name of of the secret scope for the db user
     * dbpassword_secretname - The secret name of of the secret scope for the db password
-    * metastorejarpath - the path used to store the downloaded hive jar/libs in DBFS. Note this does not get copied to the driver or worker nodes. Example Parameter in JSON:
+    * metastorejarpath - the path used to store the downloaded hive jar/libs in DBFS. Note this does not get copied to the driver or worker nodes. 
+
+Example parameter in JSON:
 ```json
 {
 "metastorejarpath":"metastore_jars_310","initmetastore":"No","hiveversion":"3.1.0","jdbcurl":"jdbc:sqlserver://oneenvsql.database.windows.net:1433;database=howardtestmetastore","dbhost":"oneenvsql.database.windows.net","dbuser_secretname":"dbuser","dbtype":"mssql","secretscope":"oetrta","dbport":"1433","dbpassword_secretname":"dbpassword"
 }
 ```
-    * When starting a cluster, add cluster init script: dbfs:/databricks/scripts/external-metastore-XXX.sh 
-      Envs to add:
-      ```
-      SQLUSER={secrets/<scoope>/<dbuser key>}
-      SQLPASSWD={secrets/<scope>/<dbpassword key>}
-      ```
+
+When starting a cluster, add cluster init script: `dbfs:/databricks/scripts/external-metastore-XXX.sh`
+
+Envs to add:
+
+```
+SQLUSER={secrets/<scoope>/<dbuser key>}
+SQLPASSWD={secrets/<scope>/<dbpassword key>}
+```
 
 Supported Hive metastore DBs:
 * Azure SQL
