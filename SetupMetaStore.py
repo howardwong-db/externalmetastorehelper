@@ -313,24 +313,26 @@ dbutils.fs.put(
 # MAGIC export HIVE_URL="$JDBCURL"
 # MAGIC export HIVE_PASSWORD="$SQLPASSWD"
 # MAGIC export HIVE_USER="$SQLUSER"
+# MAGIC if [ $INITMETASTORE == "Yes" ]
+# MAGIC then 
+# MAGIC   if [[ $HIVEVERSION == 2.2* ]]
+# MAGIC   then
+# MAGIC     SCHEMATO="2.2.0"
+# MAGIC   elif [[ $HIVEVERSION == 2.3* ]]
+# MAGIC   then
+# MAGIC     SCHEMATO="2.3.0"
+# MAGIC   else
+# MAGIC     SCHEMATO="3.1.0"
+# MAGIC   fi
 # MAGIC 
-# MAGIC if [[ $HIVEVERSION == 2.2* ]]
-# MAGIC then
-# MAGIC   SCHEMATO="2.2.0"
-# MAGIC elif [[ $HIVEVERSION == 2.3* ]]
-# MAGIC then
-# MAGIC   SCHEMATO="2.3.0"
-# MAGIC else
-# MAGIC   SCHEMATO="3.1.0"
-# MAGIC fi
+# MAGIC   # If the dry run looks correct then uncomment out the init and run it
+# MAGIC   /opt/apache-hive-3.1.0-bin/bin/schematool -dbType $DBTYPE -url $HIVE_URL -passWord $HIVE_PASSWORD -userName $HIVE_USER -driver $DB_DRIVER -initSchemaTo $SCHEMATO -ifNotExists -dryRun --verbose
 # MAGIC 
-# MAGIC # If the dry run looks correct then uncomment out the init and run it
-# MAGIC /opt/apache-hive-3.1.0-bin/bin/schematool -dbType $DBTYPE -url $HIVE_URL -passWord $HIVE_PASSWORD -userName $HIVE_USER -driver $DB_DRIVER -initSchemaTo $SCHEMATO -ifNotExists -dryRun --verbose
-# MAGIC 
-# MAGIC # Init the schema
-# MAGIC if [ $? -eq 0 ]
-# MAGIC then
-# MAGIC   /opt/apache-hive-3.1.0-bin/bin/schematool -dbType $DBTYPE -url $HIVE_URL -passWord $HIVE_PASSWORD -userName $HIVE_USER -driver $DB_DRIVER -initSchemaTo $SCHEMATO -ifNotExists --verbose
+# MAGIC   # Init the schema
+# MAGIC   if [ $? -eq 0 ]
+# MAGIC   then
+# MAGIC     /opt/apache-hive-3.1.0-bin/bin/schematool -dbType $DBTYPE -url $HIVE_URL -passWord $HIVE_PASSWORD -userName $HIVE_USER -driver $DB_DRIVER -initSchemaTo $SCHEMATO -ifNotExists --verbose
+# MAGIC   fi
 # MAGIC fi
 
 # COMMAND ----------
@@ -364,8 +366,24 @@ dbutils.fs.put(
 # COMMAND ----------
 
 print (f"""
+Setup using init script:
+
 Cluster init script: dbfs:/databricks/scripts/external-metastore-{hiveversionclean}.sh
 Envs to add:
 SQLUSER={{secrets/{secretscope}/{dbuser_secretname}}}
 SQLPASSWD={{secrets/{secretscope}/{dbpassword_secretname}}}
+""")
+
+print(f"""
+
+Setup using the UI. Copy these to the Spark Conf in the cluster config:
+
+    "spark.hadoop.javax.jdo.option.ConnectionURL" = "{jdbcurl}"
+    "spark.hadoop.javax.jdo.option.ConnectionDriverName" = "{jdbcdriver}"
+    "spark.sql.hive.metastore.version" = "{hiveversion}"
+    "spark.sql.hive.metastore.jars" = "/dbfs/databricks/{metastorejarpath}/*"
+    "spark.hadoop.datanucleus.fixedDatastore" = "true"
+    "spark.hadoop.datanucleus.autoCreateSchema" = "false"
+    "spark.hadoop.javax.jdo.option.ConnectionUserName" = "{{secrets/{secretscope}/{dbuser_secretname}}}"
+    "spark.hadoop.javax.jdo.option.ConnectionPassword" = "{{secrets/{secretscope}/{dbpassword_secretname}}}"
 """)
