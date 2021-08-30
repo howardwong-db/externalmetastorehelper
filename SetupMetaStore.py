@@ -1,6 +1,8 @@
 # Databricks notebook source
 # MAGIC %md
 # MAGIC #External Hive Metastore Setup helper for Hive 2.2+
+# MAGIC This notebook helps simplify and automate the external Hive metastore setup on Databricks.
+# MAGIC 
 # MAGIC The official documentation for Azure Databricks External Hive metastore is here: https://docs.microsoft.com/en-us/azure/databricks/data/metastores/external-hive-metastore
 # MAGIC The documentation omitted steps on packaging the metastore db jdbc driver and initializing a new metastore.
 # MAGIC 
@@ -9,11 +11,12 @@
 # MAGIC 1. Add dbuser and dbpassword into secret scope
 # MAGIC 1. Verify network access from Databricks cluster
 # MAGIC 2. Download hive version as needed
-# MAGIC 3. Configure Hive Metastore with initscript or with cluster UI.
+# MAGIC 2. Init hive metatore store db as needed
+# MAGIC 3. Configure and setup Hive Metastore with initscript for regular clusters or with cluster UI for interactive clusters and DB Sql.
 # MAGIC 
 # MAGIC How to use this notebook:
 # MAGIC * Provision new Hive metastore db or use an existing one - Gate the connection info and store the dbuser and dbpassword into a Databricks secret scope
-# MAGIC * Run this notebook on a DBR 7.3 LTS+ cluster with the parameters. This will generate the cluster init script needed for clusters to connect to the external metastore. This will generate a cluster init script on `dbfs:/databricks/scripts/external-metastore-<hiveversion>.sh` where `<hiveversion>` is the `hiveversion`  parameter without the period.
+# MAGIC * Run this notebook on a DBR 7.3 LTS+ cluster with the parameters either interactively or as a job. This will generate the cluster init script and configurations needed for clusters to connect to the external metastore. Check the last command results to get the setup information.
 # MAGIC   * Parameters:
 # MAGIC     * dbhost - the host of the metastore db
 # MAGIC     * dbport - the port of the metestore db
@@ -370,8 +373,8 @@ Setup using init script:
 
 Cluster init script: dbfs:/databricks/scripts/external-metastore-{hiveversionclean}.sh
 Envs to add:
-SQLUSER={{secrets/{secretscope}/{dbuser_secretname}}}
-SQLPASSWD={{secrets/{secretscope}/{dbpassword_secretname}}}
+SQLUSER={{{{secrets/{secretscope}/{dbuser_secretname}}}}}
+SQLPASSWD={{{{secrets/{secretscope}/{dbpassword_secretname}}}}}
 """)
 
 print(f"""
@@ -384,6 +387,6 @@ Setup using the UI. Copy these to the Spark Conf in the cluster config:
     "spark.sql.hive.metastore.jars" = "/dbfs/databricks/{metastorejarpath}/*"
     "spark.hadoop.datanucleus.fixedDatastore" = "true"
     "spark.hadoop.datanucleus.autoCreateSchema" = "false"
-    "spark.hadoop.javax.jdo.option.ConnectionUserName" = "{{secrets/{secretscope}/{dbuser_secretname}}}"
-    "spark.hadoop.javax.jdo.option.ConnectionPassword" = "{{secrets/{secretscope}/{dbpassword_secretname}}}"
+    "spark.hadoop.javax.jdo.option.ConnectionUserName" = "{{{{secrets/{secretscope}/{dbuser_secretname}}}}}"
+    "spark.hadoop.javax.jdo.option.ConnectionPassword" = "{{{{secrets/{secretscope}/{dbpassword_secretname}}}}}"
 """)
