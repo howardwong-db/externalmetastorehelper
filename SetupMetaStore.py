@@ -381,12 +381,12 @@ print(f"""
 
 Setup using the UI. Copy these to the Spark Conf in the cluster config:
 
-    "spark.hadoop.javax.jdo.option.ConnectionURL" = "{jdbcurl}"
-    "spark.hadoop.javax.jdo.option.ConnectionDriverName" = "{jdbcdriver}"
-    "spark.sql.hive.metastore.version" = "{hiveversion}"
-    "spark.sql.hive.metastore.jars" = "/dbfs/databricks/{metastorejarpath}/*"
-    "spark.hadoop.datanucleus.fixedDatastore" = "true"
-    "spark.hadoop.datanucleus.autoCreateSchema" = "false"
-    "spark.hadoop.javax.jdo.option.ConnectionUserName" = "{{{{secrets/{secretscope}/{dbuser_secretname}}}}}"
-    "spark.hadoop.javax.jdo.option.ConnectionPassword" = "{{{{secrets/{secretscope}/{dbpassword_secretname}}}}}"
+spark.hadoop.javax.jdo.option.ConnectionURL {jdbcurl}
+spark.hadoop.javax.jdo.option.ConnectionDriverName {jdbcdriver}
+spark.sql.hive.metastore.version {hiveversion}
+spark.sql.hive.metastore.jars /dbfs/databricks/{metastorejarpath}/*
+spark.hadoop.datanucleus.fixedDatastore true
+spark.hadoop.datanucleus.autoCreateSchema false
+spark.hadoop.javax.jdo.option.ConnectionUserName {{{{secrets/{secretscope}/{dbuser_secretname}}}}}
+spark.hadoop.javax.jdo.option.ConnectionPassword {{{{secrets/{secretscope}/{dbpassword_secretname}}}}}
 """)
