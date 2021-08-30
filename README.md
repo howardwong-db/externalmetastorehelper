@@ -1,4 +1,4 @@
-#External Hive Metastore Setup helper for Hive 2.2+
+# External Hive Metastore Setup helper for Hive 2.2+
 This notebook helps simplify and automate the external Hive metastore setup on Databricks.
 
 The official documentation for Azure Databricks External Hive metastore is here: https://docs.microsoft.com/en-us/azure/databricks/data/metastores/external-hive-metastore
