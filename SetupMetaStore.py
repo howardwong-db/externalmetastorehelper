@@ -148,7 +148,10 @@ text_file.close()
 
 # DBTITLE 1,Download Hive 3.1 - Always download this version for metastore init
 # MAGIC %sh
+# MAGIC cd /tmp
+# MAGIC pwd
 # MAGIC wget https://archive.apache.org/dist/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz
+# MAGIC ls -la
 # MAGIC tar -xvzf hadoop-2.7.2.tar.gz --directory /opt
 # MAGIC wget https://archive.apache.org/dist/hive/hive-3.1.0/apache-hive-3.1.0-bin.tar.gz
 # MAGIC tar -xvzf apache-hive-3.1.0-bin.tar.gz --directory /opt
@@ -157,8 +160,9 @@ text_file.close()
 
 # DBTITLE 1,Download and package the jdbc driver
 # MAGIC %sh
+# MAGIC cd /tmp
 # MAGIC . /tmp/msenv.sh
-# MAGIC if [ $DBTYPE == "MySql" ]
+# MAGIC if [ $DBTYPE == "mysql" ]
 # MAGIC then
 # MAGIC   #uncomment the db driver needed
 # MAGIC   #MariaDB driver (MySQL):
@@ -186,6 +190,7 @@ text_file.close()
 # COMMAND ----------
 
 # MAGIC %sh 
+# MAGIC cd /tmp
 # MAGIC . /tmp/msenv.sh
 # MAGIC if [ $HIVEVERSION != "3.1.0" ]
 # MAGIC then
@@ -212,8 +217,9 @@ text_file.close()
 # COMMAND ----------
 
 # MAGIC %sh
+# MAGIC cd /tmp
 # MAGIC . /tmp/msenv.sh
-# MAGIC MOD_METASTOREJARPATH=/dbfs/databricks/$METASTOREJARPATH
+# MAGIC MOD_METASTOREJARPATH=/dbfs/tmp/$METASTOREJARPATH
 # MAGIC mkdir -p MOD_METASTOREJARPATH
 # MAGIC cp -r /opt/apache-hive-$HIVEVERSION-bin/lib/. $MOD_METASTOREJARPATH
 # MAGIC cp -r /opt/hadoop-2.7.2/share/hadoop/common/lib/. $MOD_METASTOREJARPATH
@@ -248,7 +254,7 @@ cat << 'EOF' > /databricks/driver/conf/00-custom-spark.conf
     # Spark specific configuration options
     "spark.sql.hive.metastore.version" = "{hiveversion}"
     # Skip this one if <hive-version> is 0.13.x.
-    "spark.sql.hive.metastore.jars" = "/dbfs/databricks/{metastorejarpath}/*"
+    "spark.sql.hive.metastore.jars" = "/dbfs/tmp/{metastorejarpath}/*"
     #"spark.sql.hive.metastore.jars" = "builtin"
 
     "spark.hadoop.datanucleus.fixedDatastore" = "true"
